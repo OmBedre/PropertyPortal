@@ -1,17 +1,15 @@
 .alert {
-    width: 100%;
-    font-size: 1.6rem;
-    color: $color-white;
-    margin-top: 1rem;
-    height: 4rem;
-    padding: 1rem 2rem;
-    margin-bottom: 1rem;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+}
 
-    &--success {
-        background-color: #28a745;
-    }
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
 
-    &--error {
-        background-color: #dc3545;
-    }
+.alert-error {
+    background-color: #f2dede;
+    color: #a94442;
 }

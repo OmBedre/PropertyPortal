@@ -2,32 +2,39 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import permissions
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework import status
 
 User = get_user_model()
 
-class SignupView(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class SignUpView(APIView):
     permission_classes = (permissions.AllowAny, )
 
-    def post(self,request,format = None):
-        data = self.request.data
+    def post(self, request, format=None):
+        data = request.data
 
-        name = data['name']
-        email = data['email']
-        password = data['password']
-        password2 = data['password2']
+        name = data.get('name')
+        email = data.get('email')
+        password = data.get('password')
+        password2 = data.get('password2')
 
-        if password == password2:
-            if User.objects.filter(email = email).exists():
-                return Response({'error':"Email already exists"})
-            else:
-                if len(password) < 6:
-                    return Response({'error':'Password must be at least 7 characters'})
-                else:
-                    user = User.objects.create_user(email=email,password=password,name=name)
-                    user.save()
-                    return Response({'success':'User created succesfully'})
-                
+        # Check if required fields are provided
+        if not all([name, email, password, password2]):
+            return Response({'error': 'All fields are required'}, status=status.HTTP_400_BAD_REQUEST)
 
-        else:
-            return Response({'error':'Passwords do not match'})
+        if password != password2:
+            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if User.objects.filter(email=email).exists():
+            return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(password) < 6:
+            return Response({'error': 'Password must be at least 6 characters'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create user
+        user = User.objects.create_user(email=email, password=password, name=name)
+        user.save()
+        
+        return Response({'success': 'User created successfully'}, status=status.HTTP_201_CREATED)

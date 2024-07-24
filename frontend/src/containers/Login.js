@@ -1,11 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { Helmet } from 'react-helmet';
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { login } from '../actions/auth';
 
-const login = () =>(
+const Login = ({ login, isAuthenticated }) => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
 
-    <div>
-        login
+    const { email, password } = formData;
 
-    </div>
-)
+    const onChange = e => setFormData({
+        ...formData, [e.target.name]: e.target.value
+    });
 
-export default login
+    const onSubmit = e => {
+        e.preventDefault();
+        login(email, password);
+    };
+
+    if (isAuthenticated) 
+        return <Navigate to='/' />;
+
+    return (
+        <div className="auth">
+            <Helmet>
+                <title>PropertyPortal - Login</title>
+                <meta name="description" content="login page" />
+            </Helmet>
+            <h1 className="auth__title">Sign In</h1>
+            <p className="auth__lead">Sign into your Account</p>
+            <form onSubmit={onSubmit}>
+                <div className="auth__form__group">
+                    <input className="auth__form__input" type="email" placeholder="Email"
+                        name="email"
+                        value={email} onChange={onChange} required
+                    />
+                </div>
+
+                <div className="auth__form__group">
+                    <input className="auth__form__input" type="password" placeholder="Password"
+                        name="password"
+                        value={password} onChange={onChange} required
+                        minLength='6'
+                    />
+                </div>
+
+                <button className="auth__form__button">Login</button>
+            </form>
+
+            <p className="auth__authtext">
+                Don't have an Account? <Link className="auth__authtext" to='/signup'>Sign Up</Link>
+            </p>
+        </div>
+    );
+};
+
+Login.propTypes = {
+    login: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool
+};
+
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { login })(Login);

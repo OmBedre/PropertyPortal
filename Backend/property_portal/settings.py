@@ -42,6 +42,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
 ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'property_portal.urls'
 
@@ -104,6 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+AUTH_USER_MODEL = 'accounts.UserAccount'
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -143,7 +156,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+
 
 FILE_UPLOAD_PERMISSIONS = 0o640
 
