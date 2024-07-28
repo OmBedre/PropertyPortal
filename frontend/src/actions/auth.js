@@ -1,5 +1,4 @@
 import axios from 'axios';
-import axiosInstance from './csrf';
 import { setAlert } from './alert';
 import {
     SIGNUP_SUCCESS,
@@ -36,33 +35,32 @@ export const login = (email, password) => async dispatch => {
     }
 };
 
-export const signup = (name, email, password, password2) => async dispatch => {
+export const signup = ({ name, email, password, password2 }) => async dispatch => {
     const config = {
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
         }
-    };
+    }
 
-    const body = JSON.stringify({ name, email, password, password2 });
+    const body = JSON.stringify({ name, email, password, password2 }); 
 
     try {
-        const res = await axiosInstance.post('/accounts/signup/', body, config);  // Correct URL
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/accounts/signup`, body, config);
 
         dispatch({
             type: SIGNUP_SUCCESS,
             payload: res.data
         });
 
-        dispatch(setAlert('Registered successfully', 'success'));
+        dispatch(login(email, password));
     } catch (err) {
         dispatch({
             type: SIGNUP_FAIL
         });
 
-        dispatch(setAlert('Error Registering', 'error'));
+        dispatch(setAlert('Error Authenticating', 'error'));
     }
 };
-
 
 export const logout = () => dispatch => {
     dispatch(setAlert('logout successful.', 'success'));

@@ -21,27 +21,26 @@ const SignUp = ({ setAlert, signup, isAuthenticated }) => {
     const onSubmit = e => {
         e.preventDefault();
 
-        if (password !== password2)
+        if (password !== password2) {
             setAlert('Passwords do not match', 'error');
-        else
-            signup({ name, email, password, password2 });
+        } else {
+            signup(name, email, password, password2);
+        }
     };
 
-    if (isAuthenticated)
+    if (isAuthenticated) {
         return <Navigate to='/' />;
+    }
     
     return (
         <div className='auth'>
             <Helmet>
                 <title>Realest Estate - Sign Up</title>
-                <meta
-                    name='description'
-                    content='sign up page'
-                />
+                <meta name='description' content='Sign up page' />
             </Helmet>
             <h1 className='auth__title'>Sign Up</h1>
             <p className='auth__lead'>Create your Account</p>
-            <form className='auth__form' onSubmit={e => onSubmit(e)}>
+            <form className='auth__form' onSubmit={onSubmit}>
                 <div className='auth__form__group'>
                     <input 
                         className='auth__form__input'
@@ -49,7 +48,7 @@ const SignUp = ({ setAlert, signup, isAuthenticated }) => {
                         placeholder='Name'
                         name='name'
                         value={name}
-                        onChange={e => onChange(e)}
+                        onChange={onChange}
                         required 
                     />
                 </div>
@@ -60,7 +59,7 @@ const SignUp = ({ setAlert, signup, isAuthenticated }) => {
                         placeholder='Email'
                         name='email'
                         value={email}
-                        onChange={e => onChange(e)}
+                        onChange={onChange}
                         required 
                     />
                 </div>
@@ -71,8 +70,9 @@ const SignUp = ({ setAlert, signup, isAuthenticated }) => {
                         placeholder='Password'
                         name='password'
                         value={password}
-                        onChange={e => onChange(e)}
+                        onChange={onChange}
                         minLength='6'
+                        required
                     />
                 </div>
                 <div className='auth__form__group'>
@@ -82,8 +82,9 @@ const SignUp = ({ setAlert, signup, isAuthenticated }) => {
                         placeholder='Confirm Password'
                         name='password2'
                         value={password2}
-                        onChange={e => onChange(e)}
+                        onChange={onChange}
                         minLength='6'
+                        required
                     />
                 </div>
                 <button className='auth__form__button'>Register</button>
@@ -93,7 +94,6 @@ const SignUp = ({ setAlert, signup, isAuthenticated }) => {
             </p>
         </div>
     );
-
 };
 
 SignUp.propTypes = {
@@ -104,6 +104,6 @@ SignUp.propTypes = {
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
-})
+});
 
 export default connect(mapStateToProps, { setAlert, signup })(SignUp);
